@@ -1,0 +1,44 @@
+import { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import axios from 'axios';
+
+export default function RegisterPage() {
+  const [form, setForm] = useState({ name: '', email: '', password: '' });
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+
+  const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const { data } = await axios.post('http://localhost:5000/api/users/register', form);
+      localStorage.setItem('user', JSON.stringify(data));
+      navigate('/');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Registration failed');
+    }
+  };
+
+  return (
+    <div style={{ maxWidth: '400px', margin: '4rem auto', padding: '2rem', background: '#fff', borderRadius: '8px', boxShadow: '0 2px 12px rgba(0,0,0,0.08)' }}>
+      <h1 style={{ marginBottom: '1.5rem' }}>Create Account</h1>
+      {error && <p style={{ color: 'red', marginBottom: '1rem' }}>{error}</p>}
+      <form onSubmit={handleSubmit}>
+        {[['name', 'text'], ['email', 'email'], ['password', 'password']].map(([field, type]) => (
+          <div key={field} style={{ marginBottom: '1rem' }}>
+            <label style={{ display: 'block', marginBottom: '0.3rem', textTransform: 'capitalize' }}>{field}</label>
+            <input name={field} type={type} value={form[field]} onChange={handleChange} required
+              style={{ width: '100%', padding: '0.75rem', border: '1px solid #ccc', borderRadius: '4px', fontSize: '1rem' }} />
+          </div>
+        ))}
+        <button type="submit" style={{ background: '#111', color: '#fff', padding: '1rem', width: '100%', fontSize: '1rem', border: 'none', borderRadius: '4px', marginTop: '0.5rem' }}>
+          Create Account
+        </button>
+      </form>
+      <p style={{ marginTop: '1rem', textAlign: 'center' }}>
+        Already have an account? <Link to="/login" style={{ color: '#111', fontWeight: 'bold' }}>Login</Link>
+      </p>
+    </div>
+  );
+}
