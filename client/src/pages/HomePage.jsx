@@ -5,13 +5,12 @@ import { API_URL } from "../config";
 
 export default function HomePage() {
   const [featured, setFeatured] = useState([]);
-  const [hoveredId, setHoveredId] = useState(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const { data } = await axios.get(`${API_URL}/api/products`);
-        setFeatured(data.filter((p) => p.isFeatured));
+        setFeatured(data.filter((p) => p.isFeatured).slice(0, 4));
       } catch (error) {
         console.error("Failed to fetch products:", error);
       }
@@ -21,163 +20,287 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div style={{ fontFamily: "'Helvetica Neue', sans-serif", background: "#fafafa", overflowX: "hidden" }}>
+    <div style={{ background: "#f7f7f3", color: "#111", overflowX: "hidden" }}>
       <style>{`
-        @media (max-width: 768px) {
-          .hero-section {
-            min-height: 100vh !important;
-            height: auto !important;
-            padding: 3rem 1rem 3rem !important;
-            align-items: flex-start !important;
-          }
+        .hero {
+          min-height: 100vh;
+          background:
+            linear-gradient(rgba(0,0,0,.45), rgba(0,0,0,.55)),
+            url("https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=1600") center/cover;
+          display: flex;
+          align-items: flex-end;
+          padding: 6rem 4rem;
+        }
 
-          .hero-content {
-            padding: 0 !important;
-            width: 100% !important;
-            max-width: 100% !important;
-            overflow: hidden !important;
-          }
+        .hero h1 {
+          color: #fff;
+          font-size: clamp(4rem, 11vw, 10rem);
+          line-height: .82;
+          letter-spacing: -6px;
+          text-transform: uppercase;
+          max-width: 950px;
+        }
 
-          .hero-title {
-            font-size: clamp(2.5rem, 13vw, 2.8rem) !important;
-            line-height: 0.95 !important;
-            letter-spacing: -1px !important;
-            max-width: 100% !important;
-            overflow-wrap: break-word !important;
-          }
+        .hero p {
+          color: rgba(255,255,255,.8);
+          max-width: 430px;
+          margin: 1.5rem 0 2rem;
+          line-height: 1.7;
+        }
 
-          .hero-small-text {
-            font-size: 0.65rem !important;
-            letter-spacing: 5px !important;
-            line-height: 1.8 !important;
-            max-width: 100% !important;
-          }
+        .btn-row {
+          display: flex;
+          gap: 1rem;
+          flex-wrap: wrap;
+        }
 
-          .hero-description {
-            font-size: 1rem !important;
-            max-width: 100% !important;
-            margin-bottom: 2rem !important;
-          }
+        .btn {
+          padding: 1rem 2rem;
+          font-size: .8rem;
+          font-weight: 900;
+          letter-spacing: 2px;
+          text-transform: uppercase;
+          border-radius: 999px;
+          text-align: center;
+        }
 
-          .hero-buttons {
-            flex-direction: column !important;
-            width: 100% !important;
-          }
+        .section {
+          padding: 6rem 4rem;
+          max-width: 1500px;
+          margin: 0 auto;
+        }
 
-          .hero-buttons a {
-            width: 100% !important;
-            text-align: center !important;
-            box-sizing: border-box !important;
-          }
+        .editorial-grid {
+          display: grid;
+          grid-template-columns: 1.2fr .8fr;
+          gap: 1.5rem;
+        }
 
-          .featured-section {
-            padding: 4rem 1.2rem !important;
-          }
+        .editorial-card {
+          min-height: 520px;
+          border-radius: 22px;
+          overflow: hidden;
+          position: relative;
+          background-size: cover;
+          background-position: center;
+        }
 
-          .featured-header {
-            flex-direction: column !important;
-            align-items: flex-start !important;
-            gap: 1rem !important;
-          }
+        .editorial-card div {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(transparent, rgba(0,0,0,.75));
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-end;
+          padding: 2rem;
+          color: #fff;
+        }
 
-          .banner-section {
-            margin: 0 1.2rem 4rem !important;
-            min-height: 320px !important;
-            padding: 2rem 1rem !important;
-          }
+        .products-grid {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 1.2rem;
+        }
 
-          .site-footer {
-            padding: 3rem 1.2rem !important;
-          }
+        .product-card {
+          background: #fff;
+          border-radius: 18px;
+          overflow: hidden;
+          transition: transform .25s ease, box-shadow .25s ease;
+        }
+
+        .product-card:hover {
+          transform: translateY(-6px);
+          box-shadow: 0 25px 60px rgba(0,0,0,.12);
+        }
+
+        .product-img {
+          width: 100%;
+          height: 360px;
+          object-fit: cover;
+        }
+
+        .marquee {
+          background: #111;
+          color: #f0c040;
+          overflow: hidden;
+          white-space: nowrap;
+          padding: 1rem 0;
+        }
+
+        .marquee-track {
+          display: inline-block;
+          animation: marquee 20s linear infinite;
         }
 
         @keyframes marquee {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
+          from { transform: translateX(0); }
+          to { transform: translateX(-50%); }
+        }
+
+        @media (max-width: 900px) {
+          .hero {
+            padding: 5rem 1.2rem 3rem;
+            align-items: flex-end;
+          }
+
+          .hero h1 {
+            font-size: clamp(3.2rem, 17vw, 5rem);
+            letter-spacing: -3px;
+          }
+
+          .section {
+            padding: 4rem 1.2rem;
+          }
+
+          .editorial-grid {
+            grid-template-columns: 1fr;
+          }
+
+          .editorial-card {
+            min-height: 420px;
+          }
+
+          .products-grid {
+            grid-template-columns: 1fr;
+          }
+
+          .product-img {
+            height: 420px;
+          }
+
+          .btn-row {
+            flex-direction: column;
+          }
+
+          .btn {
+            width: 100%;
+          }
         }
       `}</style>
 
-      {/* HERO */}
-      <div
-        className="hero-section"
-        style={{
-          position: "relative",
-          height: "100vh",
-          backgroundImage:
-            "url(https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=1400)",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          display: "flex",
-          alignItems: "center",
-          overflow: "hidden",
-        }}
-      >
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            background:
-              "linear-gradient(120deg, rgba(0,0,0,0.85) 40%, rgba(0,0,0,0.2) 100%)",
-          }}
-        />
-
-        <div className="hero-content" style={{ position: "relative", zIndex: 1, padding: "0 6rem" }}>
-          <p className="hero-small-text" style={{ color: "#f0c040", letterSpacing: "6px", fontSize: "0.75rem", fontWeight: "600", marginBottom: "1.5rem" }}>
-            NEW COLLECTION — 2026
+      <section className="hero">
+        <div>
+          <p style={{ color: "#f0c040", letterSpacing: "5px", fontWeight: 800, fontSize: ".75rem" }}>
+            1204 FIT & LIFESTYLE
           </p>
-
-          <h1 className="hero-title" style={{ color: "#fff", fontSize: "clamp(3.5rem, 8vw, 7rem)", fontWeight: "900", lineHeight: "1", margin: "0 0 1.5rem", letterSpacing: "-2px", textTransform: "uppercase" }}>
-            Wear
-            <br />
-            <span style={{ WebkitTextStroke: "2px #fff", color: "transparent" }}>
-              Your
-            </span>
-            <br />
-            Identity
-          </h1>
-
-          <p className="hero-small-text" style={{ color: "#f0c040", letterSpacing: "6px", fontSize: "0.75rem", fontWeight: "600", marginBottom: "1.5rem" }}>
-            1204 FIT AND LIFESTYLE — 2026
-          </p>
-
-          <h1 className="hero-title" style={{ color: "#fff", fontSize: "clamp(3.5rem, 8vw, 7rem)", fontWeight: "900", lineHeight: "1", margin: "0 0 1.5rem", letterSpacing: "-2px", textTransform: "uppercase" }}>
+          <h1>
             Fit For
             <br />
-            <span style={{ WebkitTextStroke: "2px #fff", color: "transparent" }}>
-              Every
-            </span>
+            Every
             <br />
             Lifestyle
           </h1>
-
-          <p className="hero-description" style={{ color: "rgba(255,255,255,0.7)", fontSize: "1.1rem", maxWidth: "380px", marginBottom: "3rem", lineHeight: 1.7 }}>
-            Where Igbalode meets fashion. Elevate your everyday look with 1204 Fit and Lifestyle.
+          <p>
+            Premium streetwear built for confidence, comfort, and identity.
+            Discover pieces designed to move with your everyday lifestyle.
           </p>
 
-          <div className="hero-buttons" style={{ display: "flex", gap: "1rem" }}>
-            <Link to="/products" style={{ background: "#f0c040", color: "#111", padding: "1rem 2.5rem", fontWeight: "800", letterSpacing: "3px", fontSize: "0.85rem", textDecoration: "none", borderRadius: "2px", textTransform: "uppercase" }}>
-              Shop Now
+          <div className="btn-row">
+            <Link className="btn" to="/products" style={{ background: "#fff", color: "#111" }}>
+              Shop Collection
             </Link>
-
-            <Link to="/products" style={{ border: "1px solid rgba(255,255,255,0.5)", color: "#fff", padding: "1rem 2.5rem", fontWeight: "600", letterSpacing: "3px", fontSize: "0.85rem", textDecoration: "none", borderRadius: "2px", textTransform: "uppercase" }}>
-              View Lookbook
+            <Link className="btn" to="/products" style={{ border: "1px solid rgba(255,255,255,.6)", color: "#fff" }}>
+              New Arrivals
             </Link>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* MARQUEE STRIP */}
-      <div style={{ background: "#f0c040", padding: "0.9rem 0", overflow: "hidden", whiteSpace: "nowrap" }}>
-        <div style={{ display: "inline-block", animation: "marquee 18s linear infinite" }}>
+      <div className="marquee">
+        <div className="marquee-track">
           {[...Array(12)].map((_, i) => (
-            <span key={i} style={{ display: "inline-block", marginRight: "3rem", fontSize: "0.8rem", fontWeight: "800", letterSpacing: "4px", textTransform: "uppercase" }}>
-              New Drop ✦ Limited Stock ✦ Free Shipping Over $100 ✦
+            <span key={i} style={{ marginRight: "3rem", fontWeight: 900, letterSpacing: "3px", fontSize: ".8rem" }}>
+              NEW DROP ✦ LIMITED STOCK ✦ 1204 FIT & LIFESTYLE ✦
             </span>
           ))}
         </div>
       </div>
 
-      {/* keep the rest of your Featured Products, Banner CTA, and Footer code the same */}
+      <section className="section">
+        <div style={{ display: "flex", justifyContent: "space-between", gap: "1rem", alignItems: "end", marginBottom: "2rem", flexWrap: "wrap" }}>
+          <div>
+            <p style={{ color: "#b58b18", letterSpacing: "4px", fontSize: ".75rem", fontWeight: 900 }}>
+              EDITORIAL PICKS
+            </p>
+            <h2 style={{ fontSize: "clamp(2rem, 5vw, 4rem)", lineHeight: 1, marginTop: ".5rem" }}>
+              Built for daily motion.
+            </h2>
+          </div>
+          <Link to="/products" style={{ fontWeight: 900, borderBottom: "2px solid #111" }}>
+            VIEW ALL
+          </Link>
+        </div>
+
+        <div className="editorial-grid">
+          <div
+            className="editorial-card"
+            style={{ backgroundImage: "url(https://images.unsplash.com/photo-1445205170230-053b83016050?w=1400)" }}
+          >
+            <div>
+              <h3 style={{ fontSize: "2rem", marginBottom: ".5rem" }}>The Essential Drop</h3>
+              <p>Clean pieces, bold presence, everyday comfort.</p>
+            </div>
+          </div>
+
+          <div
+            className="editorial-card"
+            style={{ backgroundImage: "url(https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=1200)" }}
+          >
+            <div>
+              <h3 style={{ fontSize: "2rem", marginBottom: ".5rem" }}>Street Ready</h3>
+              <p>Minimal styling with a sharp luxury edge.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="section" style={{ paddingTop: 0 }}>
+        <p style={{ color: "#b58b18", letterSpacing: "4px", fontSize: ".75rem", fontWeight: 900 }}>
+          FEATURED PRODUCTS
+        </p>
+        <h2 style={{ fontSize: "clamp(2rem, 5vw, 4rem)", margin: ".5rem 0 2rem" }}>
+          Shop the look.
+        </h2>
+
+        <div className="products-grid">
+          {featured.map((product) => (
+            <Link to={`/products/${product._id}`} key={product._id} className="product-card">
+              <img className="product-img" src={product.images?.[0]} alt={product.name} />
+              <div style={{ padding: "1rem" }}>
+                <p style={{ color: "#888", fontSize: ".7rem", letterSpacing: "2px", textTransform: "uppercase" }}>
+                  {product.category}
+                </p>
+                <h3 style={{ margin: ".3rem 0", fontSize: "1rem" }}>{product.name}</h3>
+                <p style={{ fontWeight: 900 }}>${product.price}</p>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section
+        className="section"
+        style={{
+          background: "#111",
+          color: "#fff",
+          maxWidth: "none",
+          textAlign: "center",
+        }}
+      >
+        <p style={{ color: "#f0c040", letterSpacing: "4px", fontSize: ".75rem", fontWeight: 900 }}>
+          1204 FIT & LIFESTYLE
+        </p>
+        <h2 style={{ fontSize: "clamp(2.5rem, 7vw, 6rem)", lineHeight: .9, margin: "1rem auto", maxWidth: "900px" }}>
+          Wear your identity.
+        </h2>
+        <p style={{ color: "#bbb", maxWidth: "560px", margin: "0 auto 2rem", lineHeight: 1.8 }}>
+          A modern clothing brand made for people who move with confidence.
+        </p>
+        <Link className="btn" to="/products" style={{ background: "#f0c040", color: "#111", display: "inline-block" }}>
+          Explore Now
+        </Link>
+      </section>
     </div>
   );
 }
