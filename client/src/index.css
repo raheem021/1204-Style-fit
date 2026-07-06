@@ -25,7 +25,6 @@ a {
 
 button {
   cursor: pointer;
-  font-family: inherit;
 }
 
 img {
@@ -39,7 +38,12 @@ img {
   padding: 0 20px;
 }
 
+/* Mobile global fixes */
 @media (max-width: 768px) {
+  body {
+    overflow-x: hidden;
+  }
+
   h1 {
     font-size: clamp(2rem, 11vw, 3.4rem) !important;
   }
@@ -48,11 +52,7 @@ img {
     font-size: clamp(1.6rem, 8vw, 2.5rem) !important;
   }
 
-  p,
-  span,
-  button,
-  input,
-  textarea {
+  p {
     max-width: 100%;
   }
 

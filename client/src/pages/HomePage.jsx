@@ -27,7 +27,7 @@ export default function HomePage() {
           .hero-section {
             min-height: 100vh !important;
             height: auto !important;
-            padding: 4rem 1.2rem 3rem !important;
+            padding: 3rem 1rem 3rem !important;
             align-items: flex-start !important;
           }
 
@@ -35,10 +35,11 @@ export default function HomePage() {
             padding: 0 !important;
             width: 100% !important;
             max-width: 100% !important;
+            overflow: hidden !important;
           }
 
           .hero-title {
-            font-size: clamp(3rem, 17vw, 4.8rem) !important;
+            font-size: clamp(2.5rem, 13vw, 2.8rem) !important;
             line-height: 0.95 !important;
             letter-spacing: -1px !important;
             max-width: 100% !important;
