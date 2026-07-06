@@ -1,124 +1,212 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useCart } from "../context/CartContext";
 
 export default function Navbar() {
   const navigate = useNavigate();
+  const { cartItems } = useCart();
   const [open, setOpen] = useState(false);
   const user = JSON.parse(localStorage.getItem("user"));
 
+  const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
+
+  const closeMenu = () => setOpen(false);
+
   const handleLogout = () => {
     localStorage.removeItem("user");
-    setOpen(false);
+    closeMenu();
     navigate("/login");
   };
 
-  const linkStyle = {
-    color: "#fff",
+  const navLink = {
+    color: "#111",
     textDecoration: "none",
-    fontWeight: "700",
-    letterSpacing: "1px",
+    fontSize: "0.78rem",
+    fontWeight: 800,
+    letterSpacing: "2px",
+    textTransform: "uppercase",
   };
 
   return (
     <>
-      <nav
-        style={{
-          background: "#111",
-          color: "#fff",
-          padding: "1rem 1.5rem",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          position: "sticky",
-          top: 0,
-          zIndex: 1000,
-        }}
-      >
-        <Link
-          to="/"
-          onClick={() => setOpen(false)}
-          style={{
-            color: "#fff",
-            textDecoration: "none",
-            fontSize: "clamp(1rem, 4vw, 1.5rem)",
-            fontWeight: "900",
-            letterSpacing: "2px",
-          }}
-        >
-          1204 Fit & Lifestyle
+      <style>{`
+        .premium-nav {
+          position: sticky;
+          top: 0;
+          z-index: 1000;
+          background: rgba(248, 248, 246, 0.92);
+          backdrop-filter: blur(18px);
+          border-bottom: 1px solid rgba(0,0,0,.08);
+          height: 76px;
+          display: grid;
+          grid-template-columns: 1fr auto 1fr;
+          align-items: center;
+          padding: 0 2rem;
+        }
+
+        .nav-left,
+        .nav-right {
+          display: flex;
+          align-items: center;
+          gap: 1.4rem;
+        }
+
+        .nav-right {
+          justify-content: flex-end;
+        }
+
+        .brand-mark {
+          color: #111;
+          text-decoration: none;
+          font-size: 1.7rem;
+          font-weight: 950;
+          letter-spacing: -1px;
+        }
+
+        .mobile-menu-btn {
+          display: none;
+          background: transparent;
+          border: none;
+          font-size: 1.8rem;
+          color: #111;
+        }
+
+        .cart-pill {
+          position: relative;
+          display: inline-flex;
+          align-items: center;
+          gap: .35rem;
+        }
+
+        .cart-count {
+          background: #111;
+          color: #fff;
+          min-width: 20px;
+          height: 20px;
+          border-radius: 999px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          font-size: .7rem;
+          font-weight: 900;
+        }
+
+        .mobile-drawer {
+          position: fixed;
+          inset: 76px 0 0 0;
+          z-index: 999;
+          background: #111;
+          color: #fff;
+          padding: 2rem 1.25rem;
+          transform: translateX(0);
+        }
+
+        .mobile-drawer a,
+        .mobile-drawer button {
+          color: #fff;
+          text-decoration: none;
+          background: transparent;
+          border: none;
+          font-size: 2rem;
+          font-weight: 900;
+          letter-spacing: -1px;
+          text-align: left;
+          padding: .8rem 0;
+        }
+
+        .drawer-small {
+          border-top: 1px solid rgba(255,255,255,.12);
+          margin-top: 1.5rem;
+          padding-top: 1rem;
+          display: flex;
+          flex-direction: column;
+          gap: .3rem;
+        }
+
+        @media (max-width: 900px) {
+          .premium-nav {
+            height: 68px;
+            padding: 0 1rem;
+            grid-template-columns: 44px 1fr 44px;
+          }
+
+          .nav-left,
+          .desktop-only {
+            display: none !important;
+          }
+
+          .brand-mark {
+            justify-self: center;
+            font-size: 1.25rem;
+            text-align: center;
+          }
+
+          .mobile-menu-btn {
+            display: block;
+          }
+
+          .nav-right {
+            gap: 0;
+          }
+        }
+      `}</style>
+
+      <nav className="premium-nav">
+        <div className="nav-left">
+          <Link to="/products" style={navLink}>Shop</Link>
+          <Link to="/products" style={navLink}>Collection</Link>
+          <Link to="/products" style={navLink}>Lookbook</Link>
+        </div>
+
+        <button className="mobile-menu-btn" onClick={() => setOpen(!open)} aria-label="Toggle menu">
+          {open ? "×" : "☰"}
+        </button>
+
+        <Link to="/" className="brand-mark" onClick={closeMenu}>
+          1204
         </Link>
 
-        <button
-          onClick={() => setOpen(!open)}
-          style={{
-            background: "none",
-            border: "1px solid #333",
-            color: "#fff",
-            fontSize: "1.5rem",
-            padding: "0.3rem 0.7rem",
-            borderRadius: "4px",
-            cursor: "pointer",
-          }}
-        >
-          {open ? "✕" : "☰"}
-        </button>
-      </nav>
-
-      {open && (
-        <div
-          style={{
-            background: "#111",
-            borderTop: "1px solid #222",
-            padding: "1.5rem",
-            display: "flex",
-            flexDirection: "column",
-            gap: "1.3rem",
-            position: "sticky",
-            top: "64px",
-            zIndex: 999,
-          }}
-        >
-          <Link to="/products" onClick={() => setOpen(false)} style={linkStyle}>
-            Shop
-          </Link>
-
-          <Link to="/cart" onClick={() => setOpen(false)} style={linkStyle}>
-            Cart
-          </Link>
-
+        <div className="nav-right">
           {user?.isAdmin && (
-            <Link
-              to="/admin"
-              onClick={() => setOpen(false)}
-              style={{ ...linkStyle, color: "#f0c040" }}
-            >
+            <Link className="desktop-only" to="/admin" style={{ ...navLink, color: "#b58b18" }}>
               Admin
             </Link>
           )}
 
           {user ? (
             <>
-              <span style={{ color: "#aaa" }}>Hi, {user.name}</span>
-              <button
-                onClick={handleLogout}
-                style={{
-                  background: "#f0c040",
-                  color: "#111",
-                  border: "none",
-                  padding: "0.8rem",
-                  borderRadius: "4px",
-                  fontWeight: "800",
-                  cursor: "pointer",
-                }}
-              >
+              <Link className="desktop-only" to="/orders" style={navLink}>Orders</Link>
+              <button className="desktop-only" onClick={handleLogout} style={{ ...navLink, background: "transparent", border: "none" }}>
                 Logout
               </button>
             </>
           ) : (
-            <Link to="/login" onClick={() => setOpen(false)} style={linkStyle}>
-              Login
-            </Link>
+            <Link className="desktop-only" to="/login" style={navLink}>Login</Link>
           )}
+
+          <Link to="/cart" style={navLink} className="cart-pill" onClick={closeMenu}>
+            Cart <span className="cart-count">{cartCount}</span>
+          </Link>
+        </div>
+      </nav>
+
+      {open && (
+        <div className="mobile-drawer">
+          <Link to="/products" onClick={closeMenu}>Shop</Link>
+          <Link to="/products" onClick={closeMenu}>Collection</Link>
+          <Link to="/cart" onClick={closeMenu}>Cart ({cartCount})</Link>
+
+          <div className="drawer-small">
+            {user?.isAdmin && <Link to="/admin" onClick={closeMenu}>Admin</Link>}
+            {user ? (
+              <>
+                <Link to="/orders" onClick={closeMenu}>Orders</Link>
+                <button onClick={handleLogout}>Logout</button>
+              </>
+            ) : (
+              <Link to="/login" onClick={closeMenu}>Login</Link>
+            )}
+          </div>
         </div>
       )}
     </>
