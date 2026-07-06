@@ -5,6 +5,7 @@ import { Elements } from '@stripe/react-stripe-js';
 import StripePayment from '../components/StripePayment';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { API_URL } from "../config"
 
 const stripePromise = loadStripe('pk_test_51TlV5wKGxfrkIE8VbGut6zdZLd9l0mhysCGFLwVz1rLlGKKKRXiEt8sH1NmapZEnxaMNBwg171vuBm17OHgS5ZHG003NApCUoG');
 
@@ -24,7 +25,7 @@ export default function CheckoutPage() {
   const handleOrderSuccess = async () => {
     const user = JSON.parse(localStorage.getItem('user'));
     try {
-      await axios.post('http://localhost:5000/api/orders', {
+      await await axios.post(`${API_URL}/api/orders`, {
         items: cartItems.map(i => ({ name: i.name, price: i.price, quantity: i.quantity, size: i.size })),
         shippingAddress: address,
         totalPrice: total,

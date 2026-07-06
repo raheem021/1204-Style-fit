@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { API_URL } from '../config';
 
 export default function OrderHistoryPage() {
   const [orders, setOrders] = useState([]);
@@ -11,7 +12,7 @@ export default function OrderHistoryPage() {
     const user = JSON.parse(localStorage.getItem('user'));
     if (!user) { navigate('/login'); return; }
 
-    axios.get('http://localhost:5000/api/orders/myorders', {
+    axios.get(`${API_URL}/api/orders/myorders`, {
       headers: { Authorization: `Bearer ${user.token}` }
     })
     .then(res => { setOrders(res.data); setLoading(false); })

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useCart } from '../context/CartContext';
+import { API_URL } from '../config';  
 
 export default function ProductDetailPage() {
   const { id } = useParams();
@@ -13,7 +14,7 @@ export default function ProductDetailPage() {
   const [activeImg, setActiveImg] = useState(0);
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/api/products/${id}`).then(({ data }) => setProduct(data));
+    axios.get(`${API_URL}/api/products/${id}`).then(({ data }) => setProduct(data));
   }, [id]);
 
   const handleAddToCart = () => {

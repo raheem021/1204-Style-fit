@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { API_URL } from '../config';  
 
 const CATEGORIES = ['All', 'T-Shirts', 'Hoodies', 'Pants', 'Accessories'];
 
@@ -12,7 +13,7 @@ export default function ProductsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/products').then(({ data }) => {
+    axios.get(`${API_URL}/api/products`).then(({ data }) => {
       setProducts(data);
       setFiltered(data);
       setLoading(false);

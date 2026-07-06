@@ -1,17 +1,24 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { API_URL } from "../config";
 
 export default function HomePage() {
   const [featured, setFeatured] = useState([]);
   const [hoveredId, setHoveredId] = useState(null);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/api/products")
-      .then(({ data }) => setFeatured(data.filter((p) => p.isFeatured)));
-  }, []);
+    const fetchProducts = async () => {
+      try {
+        const { data } = await axios.get(`${API_URL}/api/products`);
+        setFeatured(data.filter((p) => p.isFeatured));
+      } catch (error) {
+        console.error("Failed to fetch products:", error);
+      }
+    };
 
+    fetchProducts();
+  }, []);
   return (
     <div
       style={{
